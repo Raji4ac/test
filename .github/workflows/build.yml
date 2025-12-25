@@ -1,13 +1,23 @@
-name: CI
+name: Node.js CI Pipeline
 
 on:
   push:
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
     steps:
-      - name: Say hello
-        run: echo "Hello from GitHub Actions"
+      - uses: actions/checkout@v3
+      - name: use Node.js ${{matrix.node-version}}
+        uses: actions/setup-node@v3
+        with:
+          node-versions: ${{matrix.node-version}}
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
 
       
